@@ -1,0 +1,213 @@
+comparator vs comparable:
+both are interfaces used for sorting the list by comparing
+comparator for customizing the logic to sort the list we can add n number oo ways to compare the two objects by implementing the comparator interface
+@Data
+public class Person implements Comparator<Person> {
+	private String name;
+	private int age;
+	private String gender;
+
+	public Person(String string, int i, String string2) {
+		this.name = string;
+		this.age = i;
+		this.gender = string2;
+	}
+
+	public Person() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		Person p = new Person("venkatesh", 27, "male");
+		Person p1 = new Person("Adithya", 1, "male");
+		Person p2 = new Person("Hanuma", 2, "male");
+		List<Person> list = new ArrayList<>();
+		list.add(p1);
+		list.add(p);
+		list.add(p2);
+		 Collections.sort(list, new Person());
+		System.out.println(list);
+	}
+
+	@Override
+	public int compare(Person o1, Person o2) {
+
+		return o1.name.compareToIgnoreCase(o2.name);
+	}
+comparable for natural ordering by the class define itself 
+@Data
+public class Person extends Person1 implements Comparable<Person> {
+	private String name;
+	private int age;
+	private String gender;
+	
+	
+
+	public Person(String string, int i, String string2) {
+		this.name = string;
+		this.age = i;
+		this.gender = string2;
+	}
+
+	@Override
+	public int compareTo(Person other) {
+
+		return Integer.compare(this.age, other.age);
+	}
+
+	public static void main(String[] args) {
+		Person p = new Person("venkatesh", 27, "male");
+		Person p1 = new Person("Hanuma", 1, "male");
+		Person p2 = new Person("Hanuma", 2, "male");
+		List<Person> list = new ArrayList<>();
+		list.add(p1);
+		list.add(p);
+		list.add(p2);
+		Collections.sort(list);
+		int x = p.sub();
+		System.out.println(list);
+	}
+
+	@Override
+	public void add() {
+		// TODO Auto-generated method stub
+
+	}
+
+sort vs sorted:
+sort :it sorts the original list ,used in collection
+sorted it will not sort the original list and sorted list will collected in another object of list ,used in streams
+
+no.of ways to sort:
+Collections.sort(list);
+Collections.sort(list,comparator)
+list.sort(comparator)
+stream.sorted()
+strea.sorted(comparator)
+treeset or treemap
+
+
+string :it is a immutable object ,threadsafe
+Stringbuilder:it is used to modify the string ,it is not a thread safe as it is asynchrozied means only one thread can access the object .
+               it is fast as compare to strngbuffer because of asynchronization.
+Stringbuffer:it is also used to modify the string ,it is thread safe because multithread environment can access the object 
+
+final:a keyword used to declare constans to prevent inheritance and to pervent method overriding
+    final variable:the variable whose value cannot be changed
+    final method: the method with varible cannot be accessed by subclasses
+    final class:the class cannot be subclassed
+  
+
+finalize:the finalize method is called to remove free up the memeory .once the garbage collector reaches it will be marked as unreferenced after all marking 
+         it will call the finalize method to free up the space
+
+finally :a block that is associtated with try catch blocks ..the block will be executed regardless of exception thrown
+
+wrapper class:A class that is used to encapulate the primitive data in the form of objects is known as wrapper class
+              wrapper classes are used during the storage of objects in the collections ..
+              as we cannot directly store primitive values ..we can store only objects in the lists..this are immutable
+              when an wrapper object is created ..we cannot change the value..when we try to change the value ..a new wrapper is created 
+
+
+Anonymous class:A class without the name is known as Anonymous class.
+
+interface Age {
+    int x = 21;
+    void getAge();
+}
+
+// Main class
+class AnonymousDemo {
+  
+    // Main driver method
+    public static void main(String[] args)
+    {
+
+        // A hidden inner class of Age interface is created
+        // whose name is not written but an object to it
+        // is created.
+        Age oj1 = new Age() {
+          
+            @Override public void getAge()
+            {
+                // printing  age
+                System.out.print("Age is " + x);
+            }
+        };
+      
+        oj1.getAge();
+    }
+}
+
+Age implementation is done with implementing the class 
+
+Abstract method in java:
+
+In oops concept abstraction is defined as hiding the unnecessary details(implementation) and just focus on the functionlity .
+
+Advantages: it increase the efficency.
+reduces complexity .
+abstraction can be achived using abstract classes and methods 
+
+Abstract class:
+a class is declared with abstract keyword .it can have zero or more abstract and non-abstract methods .inorder to implement those methods we need to extend the abstract class .we cannot create instances for the abstract classes .
+
+Any abstract class may or maynot contain abstract methods.
+
+Abstract method:
+a method with abstract keyword within the abstract class without implementaion(just with method signature /without body) is known as abstract method .
+
+the subclass which extends the abstract class must implement the abstract methods .
+we cannot use final modifier . .
+default methods are not allowed in abstract class
+we cannot declare abstract methods with the static keyword because static methods cannot be overidden as they are defined in the class itself .
+
+
+Interface :
+Another way of achieving the abstraction is using the interface concept.
+
+there can only abstract methods in interface no body .
+it is used to achive abstraction and multiple inheritance in java.
+we can have abstract methods and varibles  .
+It also represents IS-A relationship
+ we cannot create instance same as abstract class .
+Note: since java 8 we can have static and default methods in interface .
+since java 9 we can have private methods 
+
+by default in interface -> the fields are public static final ,and the methods are public abstract 
+
+Example:
+interface example{
+int x=10;  // compiler will under stood it as public static final int x=10;
+int add(int a, int b); // will understood it as public abstract int add(int a, int b);
+
+} 
+
+
+
+there may or may not be abstract methods in interface.
+multiple inheritance is provided by the interface concept .because in interface the implementation is provided by the implementaion class .so there is no ambiguity .
+
+
+NOTE : By using the abstract class we can achive the partialuy abstraction where as by using the interface we can achiveve the fully abstraction
+
+
+Concrete CLass:A normal class with an implementation for all of its methods and no abstract methods is called a concrete class
+
+Inheritance represents the IS-A relationship which is also known as a parent-child relationship.
+Aggregation represents HAS-A relationship where we will insert the class in the another class as a field .
+
+Encapsulation :binding the data and the methods into a single unit is called a class.we can prevent them accessing by using the modifiers .
+
+
+File handling in java:it invloves in  reading from and  writing to files using varrious classes and methods 
+such as:
+FileInputStream :reads data from the file in the form of Stream of bytes 
+BufferedReader :reads data from the file in the text from the stream of characters
+FileOutStream :write the data into the file in the form of bytes
+BufferedWriter: write the data into the file in the form of txt .by using try catch file closes automatically instead we need to close manually by calling close methods
+
+
+
+
+
