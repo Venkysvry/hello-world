@@ -1,4 +1,4 @@
-comparator vs comparable:
+Comparator vs comparable:
 both are interfaces used for sorting the list by comparing
 comparator for customizing the logic to sort the list we can add n number oo ways to compare the two objects by implementing the comparator interface
 @Data
