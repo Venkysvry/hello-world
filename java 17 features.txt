@@ -1,0 +1,1849 @@
+Java 17: Records, Sealed Classes & Pattern Matching
+Java 17 (LTS) introduced features that improve domain modeling, reduce boilerplate, and provide compile‑time safety.
+These features work best together.
+Records in Java 17
+What is a Record?
+A record is a special kind of class designed to represent immutable data.
+A record is a transparent data carrier whose state is fully defined by its fields.
+Why Records were introduced
+Before Java 17:
+Too much boilerplate for simple data classes (POJOs)
+Repeated code for constructors, getters, equals, hashCode, toString
+Intent of “this is just data” was not explicit
+
+Records solve this at the language level.
+Key Characteristics
+Fields are implicitly private final
+Immutable by default
+Canonical constructor is provided
+equals(), hashCode(), toString() auto-generated
+Accessors are named after fields (no get prefix)
+
+
+Example
+Javapublic record User(String name, int age) {}``Show more lines
+This automatically creates:
+
+Constructor: User(String, int)
+Methods: name(), age()
+equals, hashCode, toString
+
+
+Constructor Rules in Records
+
+Only one canonical constructor
+No no‑arg constructor
+No overloaded constructors
+Validation allowed via compact constructor
+
+Java record User(String name, int age) {    public User {        if (age < 0)            throw new IllegalArgumentException("Invalid age");    }}Show more lines
+
+When to Use Records
+✅ DTOs
+✅ API requests/responses
+✅ Events
+✅ Value objects
+❌ JPA entities
+❌ Mutable business objects
+❌ Objects with lifecycle behavior
+
+
+
+Sealed Classes in Java 17
+What is a Sealed Class?
+A sealed class or interface restricts who can extend or implement it.
+
+Sealed classes define a closed hierarchy.
+Why Sealed Classes were introduced
+Before Java 17:
+
+Inheritance was always open
+Compiler could not know all subclasses
+Switch statements needed default
+Missing cases caused runtime bugs
+
+Sealed classes enable compile‑time exhaustiveness checks.
+public sealed interface Shape
+        permits Circle, Rectangle {
+}
+public final class Circle implements Shape {}
+public final class Rectangle implements Shape {}
+
+Only Circle and Rectangle can implement Shape.
+
+Benefits
+
+Prevents unauthorized extensions
+Makes domain rules explicit
+Enables safer pattern matching
+Improves system design clarity
+
+
+When to Use Sealed Classes
+✅ Fixed domain states
+✅ State machines
+✅ Business rules
+✅ API response modeling
+❌ Plugin systems
+❌ Framework extensibility points
+
+3️⃣ Pattern Matching in Java 17
+What is Pattern Matching?
+Pattern matching combines:
+
+Type checking
+Casting
+Variable binding
+into one concise construct
+
+Before Java 17
+Java if (shape instanceof Circle) {    Circle c = (Circle) shape;}Show more lines
+Problems:
+
+Verbose
+Manual casting
+Runtime errors possible
+Missing cases not detected
+
+
+Pattern Matching with switch (Java 17)
+Java String process(Shape shape) {    return switch (shape) {        case Circle c -> "Circle";        case Rectangle r -> "Rectangle";    };}Show more lines
+
+Why This Is Powerful
+
+No casting
+No default needed
+Compiler checks all cases
+Compile‑time safety
+
+If a new subtype is added → code will not compile until handled.
+
+4️⃣ How They Work Together (IMPORTANT)
+Best Practice Combination
+
+Sealed interfaces → define domain boundaries
+Records → represent immutable data
+Pattern matching → process behavior safely
+
+
+Example: API Response Modeling
+Javasealed interface Response permits Success, Error {}Show more lines
+JavaString handle(Response response) {    return switch (response) {        case Success s -> s.data();        case Error e -> e.message();    };}Show more lines
+✅ Compile‑time safe
+✅ Clean
+✅ No invalid states
+✅ Interview‑ready design
+
+5️⃣ Compile‑Time Safety Explained
+
+Compiler checks static types
+With sealed classes, compiler also knows all implementations
+Switch expressions must be exhaustive
+Missing cases cause compile‑time errors
+
+
+Entire categories of bugs are eliminated before runtime.
+
+Enhanced Pseudo‑Random Number Generators
+✅ What it solves
+Better randomness algorithms and reproducibility.
+RandomGenerator generator =
+        RandomGenerator.of("");
+
+Deprecation and Removal
+
+Security Manager deprecated
+Applet API removed
+RMI activation removed
+
+✅ Cleaner JDK
+✅ Smaller attack surface
+
+JVM Performance & GC Improvements
+
+G1 GC optimizations
+Better memory handling
+Faster startup & JIT improvements
+
+✅ No code changes
+✅ Better performance automatically
+
+
+One‑Line Interview Summary ✅
+Java 17 introduces major language enhancements such as records, sealed classes, text blocks, and pattern matching, along with JVM improvements like enhanced random generators, strong encapsulation, and performance optimizations. As an LTS release, Java 17 is widely adopted in enterprise systems and is a preferred upgrade path from Java 11.
+
+
+
+
+
+Collections:
+when you add element in set method ..add() insert the element if there is no element in the list ..if it contains the element it will not add .return false if there is an element .otherwise insert the element and return true .
+
+streams cannot be used directly on map ..instead we stream on entryset() or keys() or values().
+
+hashmap will not maintains insertion order ..
+treeset will sort the map based on the keys..
+to preserve the insertionorder in the hashmap we will use linkedhashmap
+
+when we are converting the list to map ..you have to send the merge function argument to the toMap method ..to make sure uniue keys exists ..if there is unique comes ..whether we replace the existing value which key holds or we need to ignore the new value .or we need to perform any operation on existing value and newvalue ..we will define in the merge function 
+
+example:
+List<String> list = new ArrayList<>();
+		list.add("venkatesh");
+		list.add("rohith");
+		list.add("venkatesh");//we have list of string values 
+Map<String, Integer> map = list.stream()
+				.collect(Collectors.toMap(x -> x, x -> 1, (a, b) -> a + b, LinkedHashMap::new));//converting the list to map 
+
+
+
+see we are storing Venkatesh as a key ..and assigning value 1 to each key ..but there is a duplicate key Venkatesh is there in the list ..by default java dont know how to handle the duplicate keys ..we are providing how to handle duplicate keys in the form of merge function.
+
+a is the exsiting value and b is the newvalue ,we are adding them both and we are replacing the existing value 
+
+parallelstream()...it will divide the elements in the chunks and threads will execute the chunks and convert them to partial maps and when merging if it encounters the duplicate keys ..they will combine the result by using the merge function .
+
+when we converting the list to map and using parallel stream we will use  merge function in that case
+
+1️⃣ Java JAR File (What it really contains)
+A JAR (Java ARchive) contains:
+
+✅ Compiled .class files (bytecode)
+✅ Libraries (dependencies)
+✅ Resources (config files, templates)
+✅ META-INF metadata
+
+❗ What it does NOT contain:
+
+❌ Operating system
+❌ JVM itself
+❌ Environment configuration
+
+📦 Example:
+YAMLorder-service.jar``Show more lines
+To run it, the system must already have Java installed:
+Shelljava -jar order-service.jarShow more lines
+✅ Works only if:
+
+Java version matches
+OS supports it
+Dependencies are compatible
+
+
+2️⃣ Docker Image (What it really contains)
+A Docker image packages:
+
+✅ Your JAR file
+✅ JVM (Java 17, etc.)
+✅ Linux OS layer (Alpine / Ubuntu)
+✅ Environment variables
+✅ App startup command
+✅ Exposed ports
+
+📦 Example image layers:
+Linux OS
+└── Java 17 (JVM)
+    └── order-service.jar
+        └── ENTRYPOINT: java -jar
+
+🔥 Result:
+Shelldocker run order-serviceShow more lines
+Works:
+✅ On any machine
+✅ Without Java installed
+✅ Same behavior everywhere
+
+🚢 Where Containers Come In (Important)
+
+Containers are running instances of Docker images
+
+You store:
+✅ Image → Docker Hub / Registry
+You run:
+✅ Image → Container
+So your statement needs a small correction:
+❌ “store in the container”
+✅ Image is stored, container is created at runtime
+
+✅ Corrected Statement (Perfect Interview Answer ✅)
+
+“A Java JAR contains compiled bytecode and application resources, but it depends on the runtime environment. A Docker image packages the JAR along with the JVM, OS libraries, and configuration into a single portable unit. When the image is run, it creates a container that runs the application consistently across environments.”
+
+Setter injection resolves circular dependencies because Spring creates bean instances first, exposes early references using a three‑level cache, and injects dependencies later—something constructor injection cannot do.
+
+An early reference is a reference to a Spring bean that has been created (instantiated), but not yet fully initialized.
+
+An early reference is a partially initialized Spring bean instance exposed temporarily from the container to resolve circular dependencies before the bean is fully initialized.
+
+why the early references is not present in constructor injection?
+Early references cannot exist in constructor injection because the object itself does not exist yet.
+
+Early references cannot be used with constructor injection because the bean instance does not exist until the constructor finishes, and Spring can only expose early references for already-instantiated objects.
+
+why do we need setter injection ..where field injection works same as setter?
+
+
+ Optional Dependencies (Major Reason)
+Setter injection naturally supports optional dependencies.
+Java@Autowired(required = false)public void setMetricsService(MetricsService service) {    this.metricsService = service;}Show more lines
+✅ Benefits:
+
+Bean can exist with or without dependency
+No constructor explosion
+Cleaner conditional logic
+
+With field injection:
+Java@Autowired(required = false)private MetricsService metricsService;Show more lines
+Still possible ✅, but:
+👉 You don’t get:
+
+Validation
+Conditional logic
+Side‑effects in one place
+
+Reason #3: Validation & Side Effects During Injection
+Setter injection allows logic during injection.
+Java@Autowiredpublic void setDataSource(DataSource ds) {    if (ds == null) {        throw new IllegalStateException("DataSource cannot be null");    }    this.dataSource = ds;}Show more lines
+Field injection ❌:
+
+No validation
+No control
+No hooks
+
+Reason #6: Inheritance & Overrides
+Setter methods can be:
+
+Overridden
+Called explicitly in subclasses
+
+Javaclass BaseService {    public void setRepository(Repo repo) {        this.repo = repo;    }}class SpecialService extends BaseService {    @Override    public void setRepository(Repo repo) {        // custom behavior        super.setRepository(repo);    }}Show more lines
+Field injection ❌:
+
+Fields are not polymorphic
+No override possible
+
+Why Field Injection Exists at All (Honest Answer)
+Field injection exists because:
+✅ It’s concise
+✅ Less boilerplate
+✅ Easy for demos & quick prototypes
+But Spring officially discourages it for production code.
+
+Use setter injection when:
+
+Dependency is optional
+Circular dependency exists
+You need validation
+You want clean domain modeling
+You care about testability
+
+Use constructor injection when:
+
+Dependency is mandatory
+You want immutability
+You want fail‑fast design
+
+Avoid field injection except:
+
+Very simple components
+Tests
+Demos
+
+What Is SQL Injection (1‑minute recap)
+SQL Injection happens when:
+
+User input is directly concatenated into an SQL query
+The database interprets user input as SQL code
+
+❌ Vulnerable code
+String sql = "SELECT * FROM users WHERE username = '" + username + "'";
+If user enters:
+' OR '1'='1
+
+Query becomes:
+SELECT * FROM users WHERE username = '' OR '1'='1'
+
+SQL injection exists because of string‑based query construction
+When:
+
+SQL code ✅
+User data ✅
+
+are mixed together as strings, the database cannot tell them apart.
+
+ How SQL Injection Is Resolved (Key Principle)
+
+✅ Never mix SQL code and user data in the same string
+
+This is achieved using:
+
+Parameterized queries
+Prepared statements
+ORM frameworks
+Input validation (secondary defense)
+Primary Solution: Prepared Statements (MOST IMPORTANT)
+✅ Secure version (PreparedStatement)
+String sql = "SELECT * FROM users WHERE username = ?";
+PreparedStatement ps = connection.prepareStatement(sql);
+ps.setString(1, username);
+Why this works
+Internally:
+
+SQL is parsed first
+Query structure is fixed
+User input is treated strictly as data
+Input cannot change SQL logic
+
+Even if user enters:
+' OR '1'='1
+
+The database sees:
+username = "' OR '1'='1"
+
+➡️ no injection possible
+
+Lambdan Expression :
+it provides the immplementation of an interface which has functional interface .In case of lamda expression we dont need to define the method again for providing the immplementation .
+
+Functional Interface :
+the function which has only one abstract method is known as Functional interface.
+we will annotate as @FunctionalInterface
+A functional interface can extends another interface only when it does not have any abstract method.
+
+Java Lambda Expression Syntax:
+(argument-list) -> {body}  
+
+lambda expression consists of 3 components:
+1) Argument-list: It can be empty or non-empty as well.
+
+2) Arrow-token: It is used to link arguments-list and body of expression.
+
+3) Body: It contains expressions and statements for lambda expression.
+
+
+
+Streams :
+
+Package:import.java.util.stream;
+
+it is defined as it makes the elements from the source such as data strucutre or array or I/o through a pipeline of computational operations .
+
+the operations which are performed on the source elements  will not modifiy the source 
+
+
+Abstract method in java:
+
+In oops concept abstraction is defined as hiding the unnecessary details(implementation) and just focus on the functionlity .
+
+Advantages: it increase the efficency.
+reduces complexity .
+abstraction can be achived using abstract classes and methods 
+
+Abstract class:
+a class is declared with abstract keyword .it can have zero or more abstract and non-abstract methods .inorder to implement those methods we need to extend the abstract class .we cannot create instances for the abstract classes .
+
+Any abstract class may or maynot contain abstract methods.
+
+Abstract method:
+a method with abstract keyword within the abstract class without implementaion(just with method signature /without body) is known as abstract method .
+
+the subclass which extends the abstract class must implement the abstract methods .
+we cannot use final modifier . .
+default methods are not allowed in abstract class
+
+
+
+Interface :
+Another way of achieving the abstraction is using the interface concept.
+
+there can only abstract methods in interface no body .
+it is used to achive abstraction and multiple inheritance in java.
+we can have abstract methods and varibles  .
+It also represents IS-A relationship
+ we cannot create instance same as abstract class .
+Note: since java 8 we can have static and default methods in interface .
+since java 9 we can have private methods 
+
+by default in interface -> the fields are public static final ,and the methods are public abstract 
+
+Example:
+interface example{
+int x=10;  // compiler will under stood it as public static final int x=10;
+int add(int a, int b); // will understood it as public abstract int add(int a, int b);
+
+} 
+
+
+there may or may not be abstract methods in interface.
+multiple inheritance is provided by the interface concept .because in interface the implementation is provided by the implementaion class .so there is no ambiguity .
+
+
+NOTE : By using the abstract class we can achive the partialuy abstraction where as by using the interface we can achiveve the fully abstraction
+
+
+
+Inheritance represents the IS-A relationship which is also known as a parent-child relationship.
+Aggregation represents HAS-A relationship where we will insert the class in the another class as a field .
+
+Git :
+Git is a version controll system.nothing but a software tool that helps software team to manage their code changes to source code over a time.
+Git is created by linus torvalds in the year 2005 and has maintained by junio humano since then.
+it is used for :
+tracking code changes
+tracking who made the changes
+coding collaboration
+what does git Do?
+manage projects with Repositories
+CLONE a project to work on local
+control and track changes with STAGING and COMMITTING
+BRANCH and MERGE to allow for work on different parts and version of a project
+PULL the latest version of the project to a local
+PUSH local updates to the main project
+
+Commands:
+to change the directory from parent to child -->cd childname
+to change the directory fro child to parent  -->cd ..
+git init -->to intialise the git repo in the working directory
+git add <file name>--> to add the unstaged files to the staged files..
+git add --all -->to add all unstaged files to the staged files at a time..
+git restore <filename>  ->to discard the changes in the staged files.. when we make changes in it..
+Example
+$ git status--> to checm the status of the working directory
+On branch master
+
+No commits yet
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   index.html
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   index.html
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        ReadMe.md
+        bluestyle.css
+
+
+git branch "hello-world"-> to create the branch in main branch 
+git branch -> to view all the branches
+git checkout hello-world->checkout is used to switch from one branch to another
+git merge hello-world-> to merge the hello-world branch to the main branch ..firstly we need to switch to the main branch 
+
+
+
+
+Here’s a visual and conceptual explanation of how Creational, Structural, and Behavioral Design Patterns fit together in a real-world system, like an E-Commerce Application:
+
+✅ High-Level Architecture
+Imagine an E-Commerce App with these responsibilities:
+
+Creational Patterns: Handle object creation (products, orders, payment strategies).
+Structural Patterns: Organize and simplify complex subsystems (UI components, payment gateways).
+Behavioral Patterns: Define how objects interact (notifications, payment algorithms, order workflows).
+
+
+✅ Example Flow
+
+
+Creational Patterns
+
+Factory Method: Creates Product objects based on type (Electronics, Clothing).
+Builder: Builds complex Order objects with optional fields (discounts, gift wrap).
+Singleton: Manages a single DatabaseConnection instance.
+
+
+
+Structural Patterns
+
+Facade: Provides a simple interface for the checkout process (payment, shipping, inventory).
+Adapter: Integrates third-party payment gateways (PayPal, Stripe) with a common interface.
+Composite: Represents product bundles as a tree structure (bundle contains multiple products).
+
+
+
+Behavioral Patterns
+
+Strategy: Chooses payment method dynamically (Credit Card, UPI, PayPal).
+Observer: Sends notifications to users when order status changes.
+Command: Implements undo/redo for cart operations.
+Chain of Responsibility: Applies discount rules in sequence.
+
+
+
+
+✅ Diagram (Conceptual)
++-------------------+        +-------------------+        +-------------------+
+|   Creational      |        |   Structural      |        |   Behavioral      |
+|-------------------|        |-------------------|        |-------------------|
+| Factory -> Product|        | Facade -> Checkout|        | Strategy -> Payment|
+| Builder -> Order  |        | Adapter -> Gateway|        | Observer -> Notify |
+| Singleton -> DB   |        | Composite -> Bundle|       | Command -> Cart    |
++-------------------+        +-------------------+        +-------------------+
+
+
+✅ How They Work Together
+
+Factory creates Product objects.
+Builder assembles an Order with selected products.
+Facade simplifies checkout by calling payment, shipping, and inventory subsystems.
+Adapter ensures all payment gateways work with the same interface.
+Strategy decides which payment algorithm to use.
+Observer notifies the user when the order status changes.
+
+after all method execution..the stack is empty
+but the objects which are stored in heap will be left .to clean the heap memory ..here comes 
+Garbage collector:
+It is used to delete the unreferenced objects from the heap memory.
+JVM fully controls the garbage collector.
+System.gc(); to run the garbage collector
+eventhough you keep the command..sometimes it wont clean up.
+
+psvm(){
+
+Person obj1=new person();//obj1 reference will be stored in stack and object will be stored in heap..
+obj1=null;//there is no reference for the object and Garbage collector will delete the object in the heap
+}
+
+
+psvm(){
+
+Person obj1=new person();
+Person obj2=new person();
+obj1=obj2;//it means obj1 is referring to obj2 ..it means there is no reference for the object and gc will be called and deleted from the heap 
+}
+
+
+Garbage collector uses one of the algorithm is Mark & sweep algo:
+
+Heap memory is divided into 2 parts
+younger generation and old generation
+younger generation:
+there 3 parts
+Eden ,survivor 1 and survivor 2
+first when we create objects it will be created in Eden..after the execution completed if you run the GC it will mark the unreferenced objects and remove the marked objects.the remaining objects which have refernces will be shifted survivor 1 and there age will be increased to 1.
+
+In the same way if you run again the Gc .. it will mark the unreferenced objects and remove the marked objects.the remaining objects which have refernces will be shifted survivor 2 and there age will be increased to 2.
+In the same way if you run again the gc ..it will mark the unreferenced objects and remove the marked objects.the remaining objects which have refernces will be shifted survivor 1 and there age will be increased to 3.
+there is a concept of threshold ..which means the objects which are surving from long time will be promoted to the old generation 
+younger generation will be run by minor gc()..and the older generation will be run by the major gc();
+
+there will be difference in running the gc() 
+the minor gc() will be called frequently whereas major gc() will not be called frequently..
+
+
+there is another generation called permanent generation:
+it is also called as metaspace:
+it will store all the class variables and metadata about the objects ..the class loader loads all the classes from the metaspace.once they are executed they will be deleted from the metaspace..
+
+there are types of alogorithms used :
+Mark & sweep algo compact :this is a type of algorithm where are all the objects after removal will be stored in the sequential manner ..so that later objects will be added easily ::
+
+
+versions of Gc():
+
+
+1.serial Gc-1 thread(which is not sufficient to clean. Application will be slower)
+2.parallel gc-default (parallely multiple threads works better compare to serial)
+3.concurrent mark & sweep-gc threads and application threads work together .there is not memory compact .
+4.GI GC-How it works: Splits heap into regions and collects garbage in a mixed approach (young + old regions).
+Goal: Predictable pause times and better performance for large heaps.
+Features:
+
+Concurrent marking
+Region-based collection
+Prioritizes regions with most garbage first
+
+
+Best suited for: Large heap applications where predictable latency is important.
+
+when you run the command to execute the program :
+java hello
+
+operating system creates the jvm instance to execute the program :
+jvm calls the class loaders to load the all the classes ,jvm libraries into the method area .
+after the classes loaded into the method area ;
+Linking will be done :
+in this process :
+there are many filters to perform linking
+verification :in this filter it checks whether the bytecode structure is not(type safety ,stack disciplines ).
+example:System.out.println(A.add(x, y));
+
+JVM verifies:
+
+A.add() exists
+add returns int
+x and y are integers
+No stack corruption
+
+
+preparation :it loads all the static variables and static blocks to the class static area to the default values.
+Resolution:the byte code will be in the form symbolic references like
+
+before resolution:
+Class: "A"
+Method: "add"
+Signature: (int, int) → int
+
+after the resolution:
+
+Memory address of A.class
+Pointer to add() method in Method Area
+
+after the linking is over ,jvm performs initialization with the acutal values.
+
+Linking is the process where JVM verifies bytecode for safety, allocates memory for static variables with default values, and replaces symbolic references with direct memory references before execution.
+Example:
+
+class Demo {
+    static int a = 10;
+    static int b;
+    
+    static {
+        b = 20;
+        System.out.println("Static block executed");
+    }
+
+    public static void main(String[] args) {
+        System.out.println(a + " " + b);
+    }
+}
+Class Loading
+   ↓
+Verification → Safety
+   ↓
+Preparation → Static default values->allocates memory to the static variable or class variables
+   ↓
+Resolution → Symbol → Direct
+   ↓
+Initialization → Assign actual values + static blocks
+   ↓
+main()
+
+Initialization->
+superclass->child class
+static->instance->constructor
+
+JVM always initializes the parent (superclass) first, then the child (subclass).
+inside each class
+static variables/static blocks
+    |
+instance variables/instance blocks to the heap memory (first with default values )
+  |
+constructor
+
+Example:
+
+class Parent {
+    static int p = initP();// actual values will be assigned during the class initialization 
+
+    static {
+        System.out.println("Parent static block");// this block will be executed when class initialization performs because this block is a static block. 							All static members are executed during class initialization. 
+    }
+
+    int x = initX();
+
+    {
+        System.out.println("Parent instance block");
+    }
+
+    Parent() {
+        System.out.println("Parent constructor");
+    }
+
+    static int initP() {
+        System.out.println("Parent static variable");
+        return 10;
+    }
+
+    int initX() {
+        System.out.println("Parent instance variable");
+        return 20;
+    }
+}
+
+class Child extends Parent {
+    static int c = initC();// actual values will be assigned during the class initialization 
+
+    static {
+        System.out.println("Child static block");// this block will be executed when class initialization performs because this block is a static block. 							All static members are executed during class initialization. 
+    }
+
+    int y = initY();// non static members are loaded when you create the object of the class ..when you create the object ..jvm allocates the memory in heap 			to the instance variables and then after the memory allocation ,then it will assign the default values and then it assign the actual 				values
+    {
+        System.out.println("Child instance block");//non-static members will be called when object is created ..will be called before the constructor
+    }
+
+    Child() {
+        System.out.println("Child constructor");
+    }
+
+    static int initC() {
+        System.out.println("Child static variable");
+        return 30;
+    }
+
+    int initY() {
+        System.out.println("Child instance variable");
+        return 40;
+    }
+
+    public static void main(String[] args) {
+      Child c1= new Child();   
+		When new is executed:
+		Allocate memory in heap
+	        Set default values
+		Execute instance variable initializers
+                Execute instance blocks
+                Execute constructor
+                Assign reference to stack variable(c1)
+    }
+}
+
+output:
+when you run the program :
+parent static variable
+parent static block 
+child static variable
+child static block 
+parent instance block
+parent constructor
+class instance block 
+child constructor
+
+Note:
+->static members are loaded only once when the class loads 
+->but non-static members are loaded whenever the new object is created
+Why static blocks run before constructor?
+static blocks belongs to class level. constructors are belongs to objects. that's why constructor is called when object is created.
+
+Why parent constructor runs before child constructor?
+in the child constructor we are calling the super class with the super()--if you dont mention the super keyword ..jvm automatically insert the super keyword and calls the parent constructor
+How many times are static blocks executed?
+ Only once per class loader.
+Can we access instance variables from static block?
+no, because the objects are not created.
+
+JVM initializes parent class static members first, then child static members.
+During object creation, parent instance members and constructor execute before child ones.
+Static blocks run once per class, instance blocks run per object.
+
+Can instance block run without constructor?
+yes because jvm automatically created the default constructor.
+
+how JVM executes instance blocks:
+jvm merges all the instance block inside the constructor ..in the instance blocks we will keep all the common operations among the multiple constructors ..without the instance blocks ..if you try to update the common operation ..we have to update it in all constructors that this operation holds...if you place this common operation in instance block..if you want to update the common operation you can just update in the instance block..it will updated in all constructors ..
+
+Instance block execution order:
+Instance variable initialization 
+Instance block first
+Instance block second 
+constructor body
+
+
+
+
+
+after generating the bytecode
+if you do 
+java child;
+
+
+jvm loads the child class and parent class
+
+jvm performs linking
+verification
+preparation ->allocates the memory to the static variables with the default values p=0;c=0;
+resolution
+
+class initialization
+it will assign the actual values to the static variable ,firstly parent static members are executed and then child class members are executed
+from the above 
+parent class initialization :
+static int p = initP();// p=10 and print the parent static variable 
+
+static int initP() {
+        System.out.println("Parent static variable");
+        return 10;
+    }
+
+child class initialization :
+static int c = initC();//c=30,print child static variable 
+
+static int initC() {
+        System.out.println("Child static variable");
+        return 30;
+    }
+Static variables are stored in the Method Area of the JVM. They are created during class loading, shared among all instances of the class, and exist as long as the class is loaded in the JVM.
+The stack is per-thread, LIFO, and automatically managed (no GC).
+Stack area:
+The Stack Area stores method execution details such as method calls, local variables, parameters, and return information for each thread.
+Example:
+
+class Test {
+    void m1() {
+        int x = 10;
+        m2();
+    }
+
+    void m2() {
+        int y = 20;
+    }
+
+    public static void main(String[] args) {
+        Test t = new Test();
+        t.m1();
+    }
+}
+
+
+
+JVM starts main() thread
+A stack is created for that thread.
+STACK
+-----
+main()
+
+from the above code :
+Test t = new Test()
+
+t (reference) → stored in stack
+Object → created in heap
+
+t.m1() is called
+
+STACK:
+m1();
+main();
+
+Stack frame for m1 contains:
+
+x = 10
+reference to call m2()
+
+Stack now:
+m2()->top
+m1()
+main()
+
+
+Stack frame for m2 contains:
+int y = 20;
+m2() finishes
+
+stack now:
+m1()->top
+main();
+
+m1 finished.
+stack now:
+main();
+
+main finished
+
+empty stack and stack is destroyed
+Stack overflow occurs when:
+
+Too many nested calls
+Infinite recursion
+
+Javavoid recurse() {    recurse();}
+Results in StackOverflowError
+
+Feature         Stack              Heap
+
+Thread safety  Thread‑safe      Not thread‑safe
+Size           Small,fixed     Large
+Speed         Very fast        Slower
+Stores       Method data       Objects
+Lifetime    Method execution   Until GC
+
+Object:the thing which has some properties and behavior is know as object.
+class:it is a template of an object which holds properties and behavior of an object.
+
+pillars of OOPS concept:
+
+Abstraction:
+it hides the internal implementation and shows the functionality.
+it can be achieved by abstract classes and interface .
+Advantages:
+it increases the confidentiality and security.
+Examples:
+if you see jpa respository in springboot project .we just extends the jpa repository ..and we will use crud operation methods by using the repostiry ...but we wont see the internal implementation of those crud methods. 
+why do we need to hide it ?
+because showcasing all the internal implementations is messy..its not essential to show the internal implementation to the client or user.
+
+Encapsulation:
+Encapsulation bundles the data and methods that are working on that data into a single unit.it is also know as data-hiding .
+steps to achieve encapsulation :
+Declare variable of a class as private.
+provide a public getters and setters to modify and view the value of the variables.
+
+Encapsulation hides the internal data and get controlled access through modifiers.
+
+Encapsulation = Data hiding + Controlled access
+Data hiding: Prevent direct access to an object’s internal data.
+Controlled access: Allow access only through well-defined methods.
+
+Advantages:
+loosely coupled code.(limited access to changes the variables or internal data )
+Better access control and security.
+variable mostly should be declared private and getters and setters methods are declared public to achieve encapsulation.to access the private variables we must create the object and get controlled access to the variables through setters and getters. 
+ 
+Inheritance:inherit the properties and methods from the parent class is known as inheritance.
+there are many types of inheritance
+single heritance
+multilevel inheritance 
+hierarchial inheritance
+multiple inheritance -cannot achieved by java classes but can achieved by interface and abstract concepts.
+because if parent classes(A,B) have same method(gettcontr()) .if child class(C) extends A ,B classes.
+when we do 
+C Object=new C();
+c.gettcontr();//jvm confuses which parentclass gettcontr() ..should call will get compile time error ..in java we cannot extend 2 more classes ..will get compile error if we do ..by interface we can achieve multiple heritance..because in the interface we just keep abstract methods. so we will implement those abstract methods in the child class.so we can implement 2 more interfaces ..
+
+Advantages:
+code reusability.
+we can achieve polymorphism using inheritance concept.
+
+polymorphism: same method behaves different ways according to the situation.
+types of polymorphism
+1.compile time polymorphism/static polymorphism/method overloading:
+same method but different parameters.
+compile knows during the compile time to which overload method it is calling thats why it is compile time polymorphism.
+note:cannot achieve polymorphism by the return type
+2.run time polymorphism/dynamic polymorphism/method overriding:
+run time polymorphism can be achieved by same method name and same arguments but behavior is different.
+
+class A{
+get(){
+return true;}
+}
+class B extends A{
+@Override
+get(){
+return false;
+}
+}
+
+when we create object for B 
+B b=new B();
+b.get();//it will call if the method is present in B (child class)...else it will call the method from the parent class
+which method we call all it depends on run time
+
+Is-a Relationship:
+->achieved through inheritance
+Inheritance form an is-a relation between its parent child class
+
+Has-a Relationship:
+one class contains another class by the reference
+example:
+public class A{
+private B b;//we have class B refernce in class A
+public A(B b1){//here we are sending the B object which is created in some other class ..thats why it is weak relationship//when ever A object is           			deleted ... B object will not be deleted because the object is not created in A object and A class just holds the reference of b 			object. it is not creating the object..this relationship is known as aggregation 
+this.b=b1;
+}
+}
+
+
+public class A{
+private B b;
+public A(){
+this.b=new B();//here we are creating the object in the same class which has the reference ..it means it is hold the strong relationship ..if we delete the Object A the Object B will be automatically deleted. Because we are creating the object in the same parent class...this relation is known as composistion 
+}
+
+}
+
+
+
+Comparator vs comparable:
+both are interfaces used for sorting the list by comparing
+comparator for customizing the logic to sort the list we can add n number oo ways to compare the two objects by implementing the comparator interface
+@Data
+public class Person implements Comparator<Person> {
+	private String name;
+	private int age;
+	private String gender;
+
+	public Person(String string, int i, String string2) {
+		this.name = string;
+		this.age = i;
+		this.gender = string2;
+	}
+
+	public Person() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public static void main(String[] args) {
+		Person p = new Person("venkatesh", 27, "male");
+		Person p1 = new Person("Adithya", 1, "male");
+		Person p2 = new Person("Hanuma", 2, "male");
+		List<Person> list = new ArrayList<>();
+		list.add(p1);
+		list.add(p);
+		list.add(p2);
+		 Collections.sort(list, new Person());
+		System.out.println(list);
+	}
+
+	@Override
+	public int compare(Person o1, Person o2) {
+
+		return o1.name.compareToIgnoreCase(o2.name);
+	}
+comparable for natural ordering by the class define itself 
+@Data
+public class Person extends Person1 implements Comparable<Person> {
+	private String name;
+	private int age;
+	private String gender;
+	
+	
+
+	public Person(String string, int i, String string2) {
+		this.name = string;
+		this.age = i;
+		this.gender = string2;
+	}
+
+	@Override
+	public int compareTo(Person other) {
+
+		return Integer.compare(this.age, other.age);
+	}
+
+	public static void main(String[] args) {
+		Person p = new Person("venkatesh", 27, "male");
+		Person p1 = new Person("Hanuma", 1, "male");
+		Person p2 = new Person("Hanuma", 2, "male");
+		List<Person> list = new ArrayList<>();
+		list.add(p1);
+		list.add(p);
+		list.add(p2);
+		Collections.sort(list);
+		int x = p.sub();
+		System.out.println(list);
+	}
+
+	@Override
+	public void add() {
+		// TODO Auto-generated method stub
+
+	}
+
+sort vs sorted:
+sort :it sorts the original list ,used in collection
+sorted it will not sort the original list and sorted list will collected in another object of list ,used in streams
+
+no.of ways to sort:
+Collections.sort(list);
+Collections.sort(list,comparator)
+list.sort(comparator)
+stream.sorted()
+strea.sorted(comparator)
+treeset or treemap
+
+
+string :it is a immutable object ,threadsafe
+Stringbuilder:it is used to modify the string ,it is not a thread safe as it is asynchrozied means only one thread can access the object .
+               it is fast as compare to strngbuffer because of asynchronization.
+Stringbuffer:it is also used to modify the string ,it is thread safe because multithread environment can access the object 
+
+final:a keyword used to declare constans to prevent inheritance and to pervent method overriding
+    final variable:the variable whose value cannot be changed
+    final method: the method with varible cannot be accessed by subclasses
+    final class:the class cannot be subclassed
+  
+
+finalize:the finalize method is called to remove free up the memeory .once the garbage collector reaches it will be marked as unreferenced after all marking 
+         it will call the finalize method to free up the space
+
+finally :a block that is associtated with try catch blocks ..the block will be executed regardless of exception thrown
+
+wrapper class:A class that is used to encapulate the primitive data in the form of objects is known as wrapper class
+              wrapper classes are used during the storage of objects in the collections ..
+              as we cannot directly store primitive values ..we can store only objects in the lists..this are immutable
+              when an wrapper object is created ..we cannot change the value..when we try to change the value ..a new wrapper is created 
+
+
+Anonymous class:A class without the name is known as Anonymous class.
+
+interface Age {
+    int x = 21;
+    void getAge();
+}
+
+// Main class
+class AnonymousDemo {
+  
+    // Main driver method
+    public static void main(String[] args)
+    {
+
+        // A hidden inner class of Age interface is created
+        // whose name is not written but an object to it
+        // is created.
+        Age oj1 = new Age() {
+          
+            @Override public void getAge()
+            {
+                // printing  age
+                System.out.print("Age is " + x);
+            }
+        };
+      
+        oj1.getAge();
+    }
+}
+
+Age implementation is done with implementing the class 
+
+Abstract method in java:
+
+In oops concept abstraction is defined as hiding the unnecessary details(implementation) and just focus on the functionlity .
+
+Advantages: it increase the efficency.
+reduces complexity .
+abstraction can be achived using abstract classes and methods 
+
+Abstract class:
+a class is declared with abstract keyword .it can have zero or more abstract and non-abstract methods .inorder to implement those methods we need to extend the abstract class .we cannot create instances for the abstract classes .
+
+Any abstract class may or maynot contain abstract methods.
+
+Abstract method:
+a method with abstract keyword within the abstract class without implementaion(just with method signature /without body) is known as abstract method .
+
+the subclass which extends the abstract class must implement the abstract methods .
+we cannot use final modifier . .
+default methods are not allowed in abstract class
+we cannot declare abstract methods with the static keyword because static methods cannot be overidden as they are defined in the class itself .
+
+
+Interface :
+Another way of achieving the abstraction is using the interface concept.
+
+there can only abstract methods in interface no body .
+it is used to achive abstraction and multiple inheritance in java.
+we can have abstract methods and varibles  .
+It also represents IS-A relationship
+ we cannot create instance same as abstract class .
+Note: since java 8 we can have static and default methods in interface .
+since java 9 we can have private methods 
+
+by default in interface -> the fields are public static final ,and the methods are public abstract 
+
+Example:
+interface example{
+int x=10;  // compiler will under stood it as public static final int x=10;
+int add(int a, int b); // will understood it as public abstract int add(int a, int b);
+
+} 
+
+
+
+there may or may not be abstract methods in interface.
+multiple inheritance is provided by the interface concept .because in interface the implementation is provided by the implementaion class .
+so there is no ambiguity .
+
+
+NOTE : By using the abstract class we can achive the partialuy abstraction where as by using the interface we can achiveve the fully abstraction
+
+
+Concrete CLass:A normal class with an implementation for all of its methods and no abstract methods is called a concrete class
+
+Inheritance represents the IS-A relationship which is also known as a parent-child relationship.
+Aggregation represents HAS-A relationship where we will insert the class in the another class as a field .
+
+Encapsulation :binding the data and the methods into a single unit is called a class.we can prevent them accessing by using the modifiers .
+
+
+File handling in java:it invloves in  reading from and  writing to files using varrious classes and methods 
+such as:
+FileInputStream :reads data from the file in the form of Stream of bytes 
+BufferedReader :reads data from the file in the text from the stream of characters
+FileOutStream :write the data into the file in the form of bytes
+BufferedWriter: write the data into the file in the form of txt .by using try catch file closes automatically instead we need to close manually
+ by calling close methods
+
+java 8 features:
+1.lambda expression:it is anonymous function that can treated instance of an interfacep.
+rovide a clear and concise way to represent a functional interface in a single expression
+
+2.Functional interface :interface that consists of only abstract method and can have multiple default or static methods ,
+annotated with @FunctionalInterface so that the interface cannot have more than 1 abstract method
+
+3.StreamAPi:
+we can perform the set of operations in the sequences of elements
+
+4.Default methods :
+interfaces can now have  default methods so that we can the breaking the method when implementing the interface
+Default methods are methods defined in an interface with a default implementation. They allow interfaces to evolve
+ by adding new methods without forcing all implementing classes to provide an implementation for the new methods.
+Default methods are declared using the default keyword followed by the method signature and the method body.
+
+Inheritance: Default methods can be inherited by implementing classes. If a class does not override the default method, it will use the implementation 
+provided by the interface.
+Overriding: Implementing classes can override default methods to provide their own implementation.
+Multiple Inheritance: If a class implements multiple interfaces with conflicting default methods, the class must override the method to resolve the conflict.
+
+5.method References
+
+6.Optional class: it is a container object which may or may not contain a value .it is used to avoid nullpointerexception .provides methods to deal
+with presence or absence of a value
+Example:
+Optional<String> optional = Optional.of("Hello");
+optional.ifPresent(System.out::println);
+
+7.Date and time APi
+8. Base64 Encoding and decoding: java provides a utility class for encoding and decoding
+
+remove duplicate in arrays:
+int[] arr = { 1, 2, 2, 5, 7, 1, 3, 5, 7 };
+int[] unique = Arrays.stream(arr).distinct().toArray();
+2 ways of creating an array:
+int[] arr = { 1, 2, 2, 5, 7, 1, 3, 5, 7 };
+int[] arr=new int[10];
+termianl operations:
+In Java 8, terminal operations are the final operations in a stream pipeline that produce a result or a side-effect. 
+Once a terminal operation is applied, the stream is consumed and cannot be used further. Here are some common terminal operations
+1.forEach
+collect
+reduce
+count
+findFirst
+findAny
+allMatch
+anyMatch
+noneMatch
+SingleTonDesign pattern:implementing singleTonDesign pattern useful for managing one particular instance or component all over the application 
+realtime examples:
+database connection management-we will configure the database connection once in the application prop file 
+and we will use all that instance all over the running application 
+logging:
+configuration
+
+how the constructor called:
+when we create an object using the new kewword ..the new keyword triggers the jvm to allocate the memory for the new object and then constructor will be 
+called to initialize the object ..if no explicit constructor is defined ..then jvm defines the no argument constrcutor
+
+How Auto-Configuratoion works:
+Springboot automatically configures the application based on the dependencies you provided .
+Spring Boot scans the classpath for libraries and frameworks you have included in your project. 
+Based on these, it provides sensible defaults and configurations. For example, if you include the spring-boot-starter-web dependency, 
+Spring Boot will automatically configure a web application with an embedded Tomcat server.
+
+What Happens Behind the Scenes:
+
+When you run the application, Spring Boot performs the following auto-configuration steps:
+
+Embedded Server: Configures an embedded Tomcat server.
+Dispatcher Servlet: Sets up the dispatcher servlet to handle incoming requests.
+Jackson: Configures Jackson for JSON serialization and deserialization.
+Error Handling: Provides default error handling mechanisms.
+
+Component-Scanning:
+
+Component scanning is a feature in the Spring framework that automatically detects and registers beans (components) in the application context. 
+This process simplifies the configuration by eliminating the need to explicitly declare each bean in the configuration file.
+Spring uses annotations to identify and register beans. The @ComponentScan annotation is used to specify the packages to scan for annotated components.
+ Spring will then scan these packages and their sub-packages for classes annotated with @Component, @Service, @Repository, or @Controller
+
+What Happens Behind the Scenes:
+
+When the application starts, Spring performs the following steps:
+
+Scan Packages: Spring scans the specified packages for classes annotated with @Component, @Service, @Repository, and @Controller.
+Register Beans: Spring registers these classes as beans in the application context.
+Dependency Injection: Spring injects dependencies into the beans where @Autowired is used.
+
+
+difference between relational database and no sql database:
+
+RelationDatabase:In RelationalDatabase the data will be stored in tables in the form of rows and columns .
+each table represents different entity and relationships will be maintained by using 
+foreign keys.we use SQL for querying and managing the data
+
+Structure: Tables with predefined schemas.
+Use Case: Ideal for applications requiring complex queries and transactions, such as banking systems.
+
+NoSQL database: it is used to handle unstructured and semi-strucutured data in the form of document-based,key-value pairs ,wide-column ,or graphs .
+they offer flexibility to design and can scale horizontally
+Relational Database: A banking system where transactions need to be consistent and reliable.
+NoSQL Database: A social media platform where user profiles and posts can vary greatly in structure.
+
+Unstructured Data
+Unstructured data does not have a predefined data model or schema. It is often text-heavy and can include various formats like images, videos, emails, social media posts, and documents. This type of data is typically more challenging to analyze and process.
+
+Example:
+
+Emails: Each email can have different content, attachments, and formats.
+Social Media Posts: Posts can include text, images, videos, and links, all in varying formats.
+Semi-Structured Data
+Semi-structured data has some organizational properties but does not conform to a rigid schema like relational databases. It includes tags or markers to separate data elements, making it easier to parse and analyze than unstructured data.
+
+Example:
+
+JSON (JavaScript Object Notation):
+{
+  "name": "John Doe",
+  "email": "john.doe@example.com",
+  "phone": "123-456-7890",
+  "addresses": [
+    {
+      "type": "home",
+      "address": "123 Main St, Anytown, USA"
+    },
+    {
+      "type": "work",
+      "address": "456 Corporate Blvd, Bigcity, USA"
+    }
+  ]
+}
+
+
+XML (eXtensible Markup Language):
+<person>
+  <name>John Doe</name>
+  <email>john.doe@example.com</email>
+  <phone>123-456-7890</phone>
+  <addresses>
+    <address type="home">123 Main St, Anytown, USA</address>
+    <address type="work">456 Corporate Blvd, Bigcity, USA</address>
+  </addresses>
+</person>
+
+Key Differences
+Structure:
+
+Unstructured: No predefined structure.
+Semi-Structured: Contains tags or markers to identify data elements.
+
+Ease of Processing:
+Unstructured: More challenging to process and analyze.
+Semi-Structured: Easier to parse and analyze due to identifiable elements.
+
+Example Scenario
+Unstructured Data: Analyzing customer feedback from various sources like emails, social media, and support tickets.
+Semi-Structured Data: Storing and querying user profiles in a JSON format for a web application.
+
+Marker interfaces :In java marker interface is an interface which has no methods and fields .its main purpose is to specify a class with certain behavior 
+or property ,which can recognized by java runtime environment or other frameworks .
+Examples:Serializable,runnable
+Serialization:it is an interface it is used to convert the objects into byte stream data inorder to store the data in file or database.
+
+
+
+
+
+
+
+
+ANGULAR Questions:
+
+
+Create an angular application:
+
+step1:install npm or node by the command
+npm install -g@angular/cli
+
+step2:navigate to the folder where you want to create the project
+step3:create the angular project using the command
+ng new name-of-the project
+
+stpe 4: navigate to the project by cd name-of the project
+step 5:inorder to open the project in vscode :
+type code .
+
+
+explain the files present in project:
+node_modules:   the folder that containing dependencies installed via npm or yarn .
+src/:           source code folder containing the application code.
+angular.json:   Configuration file for the Angular CLI.
+package.json:   Configuration file for npm or yarn.
+app/:           Application folder, containing the main application code.
+assets/:        Folder containing static assets, such as images and fonts.
+environments/:  Folder containing environment-specific configuration files.
+index.html:     The main HTML file for the application.
+main.ts:        The main entry point for the application.
+polyfills.ts:   File containing polyfills for older browsers.
+styles.css:     Global CSS file for the application.
+test.ts:        Test entry point for the application.
+
+app.component.css: CSS file for the AppComponent.
+app.component.html: HTML template for the AppComponent.
+app.component.spec.ts: Unit test file for the AppComponent.
+app.component.ts: TypeScript file for the AppComponent (the one you provided earlier).
+app.module.ts: Module file for the application, defining the main application module.
+app-routing.module.ts: Routing module file for the application.
+
+Module File:
+
+In Angular, a module file is a TypeScript file that defines a module, which is a container for related components, services, and other features.
+A module file is typically named with a .module.ts extension.
+
+Purpose:
+
+The primary purpose of a module file is to:
+
+Declare components: List the components that belong to the module.
+Declare services: List the services that are provided by the module.
+Import other modules: Import other modules that are required by the module.
+Export the module: Make the module available for import in other parts of the application.
+
+There are two main types of modules in Angular:
+
+Root Module: The main application module, usually named AppModule.
+Feature Module: A module that provides a specific feature or functionality, usually named after the feature (e.g., UserModule, ProductModule, etc.).
+
+
+differce between maven and gradle
+1.performance:
+maven:
+It will:
+
+Clean all compiled files.
+Rebuild all modules from scratch, even if only core changed.
+Re-run all tests.
+⏱️ Time taken: Longer, because it doesn't skip unchanged modules.
+Gradle uses:
+
+Incremental builds: Only rebuilds modules that changed.
+Build cache: Reuses outputs from previous builds if inputs haven’t changed.
+Parallel execution: Builds independent modules simultaneously.
+It will:
+
+Detect that only core changed.
+Rebuild only core and its dependents (api, if needed).
+Skip web if it’s unaffected.
+Run tasks in parallel where possible.
+⏱️ Time taken: Much faster, especially in large projects.
+Build Script Language
+Maven: Uses XML (pom.xml) for configuration.
+Pros: Structured and standardized.
+Cons: Verbose and harder to customize.
+Gradle: Uses Groovy or Kotlin DSL (build.gradle or build.gradle.kts).
+Pros: More concise and flexible.
+Cons: Slightly steeper learning curve for beginners.Both use repositories like Maven Central and support transitive dependencies.
+Gradle offers more fine-grained control over dependency resolution and conflict management.
+Maven: Great for standard Java projects with simple build requirements.
+Gradle: Preferred for Android development, multi-module projects, and complex builds.
+
+A JWT (JSON Web Token) is a compact, URL-safe token used for securely transmitting information between parties.
+It consists of three parts: Header, Payload, and Signature. Here's a detailed breakdown:
+Header:in the header part we will provide signing algorithm and type of token
+Payload:in payload we will give all claims ..here claims are nothing but some information about the user like name email..etc
+signature:signature contains encoded part of header ,encoded part of payload and secret key .
+Secret Key: Ensure the secret key used for signing is kept secure.
+
+How the hashmap works internally?
+A HashMap stores data as key-value pairs and uses a hashing mechanism to store and retrieve values efficiently (O(1) average time).
+Internal Data Structure
+Internally, HashMap uses:
+Array of buckets (Node[])
+
+Each bucket contains:
+
+A LinkedList (before Java 8)
+A LinkedList or Red-Black Tree (from Java 8 onward)
+
+How Data is Stored (PUT Operation)
+When you insert:
+map.put(key, value);
+
+Step-by-step:
+✅ Step 1: Calculate Hash
+int hash = key.hashCode();
+
+✅ Step 2: Find Bucket Index
+
+index = hash % arraySize;
+
+ Step 3: Store in Bucket
+Now there are 3 cases:
+🟢 Case 1: Bucket is empty
+
+Directly insert node
+
+
+🟡 Case 2: Bucket has data (Collision happens)
+👉 Collision = two keys map to same index
+Then:
+
+Compare keys using equals()
+
+➤ If key already exists:
+
+Replace value
+
+➤ If different key:
+
+Add new node to list
+
+
+🔴 Case 3: Too many collisions (Java 8 improvement)
+
+If nodes in a bucket > 8 → convert to Red-Black Tree
+Improves performance from:
+
+O(n) → O(log n)
+
+4. How Data is Retrieved (GET Operation)
+
+map.get(key);
+
+Steps:
+
+Compute hash
+Find index
+Go to that bucket
+Traverse:
+
+LinkedList OR Tree
+
+
+Compare using equals()
+
+map.get("A");
+
+Find index
+Iterate nodes
+Return matching value
+Fetching Value in Case of Collision
+Suppose we call:
+map.get(key);
+
+Step-by-Step Process
+✅ 1. Calculate Hash
+Find Bucket Index
+Traverse the Bucket
+Now HashMap checks nodes one by one:
+
+if (node.hash == hash && node.key.equals(key))
+
+ BOTH conditions must match:
+
+Hash should match
+Key should match using equals()
+
+
+✅ 5. Return Value When Match Found
+
+ Important: Why equals() is Needed?
+Even if hash is same, keys can still be different.
+
+By default, equals() compares object references. To compare object state or content, we must override equals() method."
+
+in hashmap internal flow :
+first hashcode will be genereated by using the hashcode() method ..after that hash is performed because which is genereated is large number ....is not used directly because size of the bucket is not large..so we will perform hash to decrease the hashcode [hashcode ^ (hashcode >>> 16)]..and then we will calculate the bucket index [(size of array-1)&hash--performing XAND gate ] 
+why we need to this step hashcode ^ (hashcode >>> 16)?
+because hashmap uses only digits of the hashcode to decide the bucket ..so if
+the hashcode last few digits is all zeros is not a good sign to choose the buckets ..so there may be chance like a few elements have all zeros ..so we forward the upper digits to the lower digits ..so that last few digits are not zeros and we perform XOR operation so that we will not lose the original digits ..
+example:
+Imagine:
+Bucket size = 16
+
+So only last 4 bits are used.
+❌ Without Mixing
+Consider 2 hashcodes:
+Hash1 = 1000000000000000
+Hash2 = 1110000000000000
+
+👉 Look at last 4 bits:
+0000
+0000
+
+✅ Both go to same bucket
+💥 This is called a collision
+
+✅ But notice something!
+Even though:
+
+numbers are very different
+upper bits are different
+
+👉 HashMap ignores them!
+
+✅ So what is the solution?
+👉 Use upper bits also
+But HashMap only uses lower bits…
+👉 So we bring upper bits down
+
+✅ That’s exactly this line:
+hash = hashcode ^ (hashcode >>> 16);
+
+✅ What this does (simple)
+
+Take upper bits
+Push them down
+Mix with lower bits
+
+
+✅ After Mixing
+Let’s say:
+Original:  1000000000000000
+Shifted:   0000000000001000
+--------------------------------
+Result:    1000000000001000
+
+Now last bits:
+1000 ✅
+
+
+Second number:
+Original:  1110000000000000
+Shifted:   0000000000001110
+--------------------------------
+Result:    1110000000001110
+
+Last bits:
+1110 ✅
+
+
+🎯 Result
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+BeforeAfterBoth → 0000One → 1000, Other → 1110Same bucket ❌Different buckets ✅
+
+✅ Now your 3 statements finally make sense:
+
+✅ 1. "Mix high bits into low bits"
+👉 We take upper bits and move them into lower bits
+👉 So lower bits are not boring
+
+✅ 2. "Improve distribution across buckets"
+👉 Buckets depend on lower bits
+👉 Now lower bits are more random
+✅ Keys spread out nicely
+
+✅ 3. "Reduce collisions"
+👉 Earlier → many keys went to same bucket
+👉 Now → keys go to different buckets
+✅ Fewer collisions
+
+✅ One-line simple understanding
+
+HashMap mixes bits because it only uses lower bits, so we make those lower bits more random and useful
+
+
+✅ Super Simple Analogy
+Imagine:
+
+You assign students to rooms based only on last digit of roll number
+
+❌ Without mixing:
+All roll numbers end with 0 → everyone in same room 😄
+
+Shifting alone only moves upper bits, but XOR combines both original and shifted values, ensuring that lower bits used for bucket indexing contain information from both high and low parts, improving distribution.
+
+can you exaplin the scenario where multiple threads access the same account simulataneuosly?
+
+Multiple threads access the same account when multiple requests (like withdrawals, deposits, or payments) arrive at the same time. Each request is handled by a separate thread for better performance. Without synchronization, concurrent updates can lead to race conditions and incorrect balances. Therefore, synchronization ensures that only one thread modifies the account at a time, maintaining data consistency.
+
+✅ 1. How do you control too many threads?
+👉 Problem: Too many threads ⇒
+
+High CPU usage
+Memory issues
+Context switching overhead
+
+✅ Best Answer:
+
+“We control threads using thread pools instead of creating threads manually.”
+
+✅ 2. How to debug multithreading issues?
+👉 Multithreading bugs are tricky:
+
+Deadlocks
+Race conditions
+Thread starvation
+
+
+✅ Best Answer:
+
+“I debug multithreading issues using thread dumps, logs, and monitoring tools.”
+
+✅ 3. How to avoid race conditions?
+👉 Race condition = multiple threads updating shared data
+
+“We avoid race conditions by ensuring thread-safe access to shared resources.”
+
+“I avoid race conditions using synchronization, atomic classes, concurrent collections, and by minimizing shared mutable state.”
+
+deadlock secanrio:
+Imagine two accounts and two threads transferring money:
+class Account {
+    int balance;
+
+    synchronized void transfer(Account target, int amount) {
+        synchronized (target) {
+            this.balance -= amount;
+            target.balance += amount;
+        }
+    }
+}
+
+⚠️ What goes wrong?
+Two threads:
+
+Thread 1 → transfers A → B
+Thread 2 → transfers B → A
+
+💥 Deadlock happens:
+
+
+Thread 1 locks A---waits for B
+Thread 2 locks B--waits for A
+👉 Both wait forever
+with monitor lock (lock on object )
+
+-"NullPointerException occurs when we try to access data or call methods using a reference that is null(it means it is not pointing to any object in heap memeory) (i.e., it does not point to any object)."
+when we are trying to get the elements from the empty list ..it will throw NoSuchElementException eventhough we use optianl classess .because optinal avoid null pointer exception but not handle empty list..
+"Null means no object, whereas empty means object is present but contains no data."
+
+Kafka secures access to its topics using a combination of authentication, authorization, and encryption mechanisms. In modern production setups, Kafka integrates with identity providers like Keycloak or Azure AD using OAuth-based authentication (JWT tokens) via the SASL/OAUTHBEARER mechanism. When a client application (e.g., Spring Boot) wants to connect, it first fetches a JWT access token from the identity provider and sends it to Kafka. The Kafka broker then validates this token internally by verifying its signature, issuer, and expiration. This validation is done using asymmetric cryptography, where the token is signed by the identity provider using a private key, and Kafka verifies it using the corresponding public key, which it retrieves from the JWKS (JSON Web Key Set) endpoint. Kafka never has access to the private key and does not perform any external calls during validation, making it fast and secure. After successful authentication, Kafka performs authorization using ACLs (Access Control Lists) or RBAC (Role-Based Access Control) in enterprise setups, determining which users can produce or consume from specific topics. Additionally, Kafka ensures data security in transit using SSL/TLS encryption, and can integrate with LDAP or Active Directory for enterprise identity management. Overall, Kafka itself does not validate API-level tokens before requests; instead, it ensures that only authenticated and authorized clients can connect and interact securely with topics.
+
+if you want to perform any operations like the number starting with the 2 or 1 like that ..similar operations ..we can do that type of operation only on strings ..so we first we will that number to the strings then we will check..
+like 
+List<Integer> list =List.of(1,2,3,44);
+list.stream().filter(x-> String.valueOf(x).startsWith("4")).toList(); //integers starts with the 4 
+note :List.of()..it is a immutable collection ..we cannot modify the collection..if we try to do that it will throw a runtime exception..
+list.add(9);// throws method not supported exception 
+
+In production, application health and logs are monitored using a combination of logging, metrics, and alerting tools. Logs are centralized using tools like ELK Stack or Splunk to capture errors, requests, and system behavior for debugging and analysis. Application health is monitored using health check endpoints such as Spring Boot Actuator, which provide real-time service status. Metrics like CPU usage, memory, response time, and error rates are collected using Prometheus and visualized using Grafana dashboards. Alerts are configured using tools like AlertManager or PagerDuty to notify teams when thresholds are breached or services fail. Additionally, distributed tracing tools like Zipkin or Jaeger are used in microservices architectures to track request flow across services and identify bottlenecks. This combination ensures high availability, quick issue detection, and efficient troubleshooting in production systems.
+
+for example a million of users is paying the merchant at the same time ? how will you desing your system in that case ?
+
+To design a payment system that handles millions of concurrent users, I would use a scalable and fault-tolerant architecture with asynchronous processing. Incoming requests would first pass through an API gateway and use idempotency keys to prevent duplicate payments. The requests would then be pushed to a Kafka topic to decouple processing and handle high traffic. Kafka partitions would be designed based on user or account IDs to ensure ordered processing and avoid race conditions. Worker services would consume messages and process payments using optimistic locking and database transactions to ensure consistency. Additionally, mechanisms like retries, dead-letter queues, and monitoring would be implemented for reliability. This approach ensures scalability, consistency, and fault tolerance in high-concurrency payment scenarios.
+
+abstractoin is oops principle which hides the internal implementaion and provides just functionality to the user .
+it is used to provides security to the applicatoin so that the user dont konw the internal implementation.if the user knows the internal implementation user will try to change the implementation.it provides the simplicity to the user ..so that user will not confused when using the application ...
+“Partial abstraction means hiding some implementation details while exposing some functionality. In Java, abstract classes provide partial abstraction because they can have both abstract methods and concrete methods. Since not all methods are abstract, it is not complete abstraction.”
+
+“Yes, in production we only need the production configuration, but in real projects we package all environment-specific configuration files together in a single build. This is because we follow a ‘build once, deploy everywhere’ approach. At runtime, we activate the required profile using environment variables, so only the relevant configuration is loaded. This ensures consistency, simplifies CI/CD pipelines, and avoids the need to rebuild the application for different environments.”
+
+“Yes, in Spring Boot we usually create a default application.properties file along with profile-specific files like application-dev.properties, application-test.properties, and application-prod.properties. By default, if no profile is specified, Spring Boot uses application.properties. When a profile is activated, Spring Boot loads both the default configuration and the profile-specific file, and the profile-specific properties override the default ones if there are conflicts.”
+
+“Checked exceptions must be handled using try-catch or declared using throws. When we use throws, the exception is propagated. In Spring Boot, if it is not handled in the controller, it can be handled globally using @ControllerAdvice, which allows centralized exception handling and proper API responses.”
+
+ 
+
+

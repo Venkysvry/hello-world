@@ -1,0 +1,46 @@
+Sql queries:
+
+1.select * from tablename ;  //query to fetch all the rows from the table 
+2.select * from tablename
+where department='Finance';  //fetch the records where deoartment=finance..make sure you                 						    provide value in the single quotes
+3.select * from tablename 
+where department='Finance' AND salary> 350000;//fetch the records where deoartment=finance and whose salary greater 						than 35000 make sure you provide value in the single quotes
+
+aggregate functions perform a calculation on a set of rows and return a single value. They are commonly used with GROUP BY to summarize data.
+
+COUNT()
+AVG()
+SUM()
+MIN()
+MAX()
+
+Key Difference: WHERE vs HAVING
+where clause works on individual rows ..we will use where to filter the rows..
+Having clause works on groups ..having will used on the filtered groups.. It works after GROUP BY and can filter grouped data
+
+when you are trying to select the column names along with the aggregation you must use group by otherwise it will throe error
+
+Because:
+
+SUM() → gives single value
+customer_name → many values
+
+💡 SQL gets confused:
+
+“You want SUM of all rows, but also a specific customer name — which one should I show?”
+
+To find the second highest salary while ignoring duplicate values, SQL provides an efficient approach using the window function DENSE_RANK(). In this method, salaries are first sorted in descending order, and ranks are assigned such that duplicate salaries receive the same rank, and no ranks are skipped. This ensures that the ranking sequence remains continuous even when duplicate values exist. For example, if two employees have the highest salary, both will be assigned rank 1, and the next distinct salary will be assigned rank 2. By wrapping this logic in a subquery, we can filter for records where the rank equals 2 to obtain the second highest salary. The query uses DENSE_RANK() OVER (ORDER BY salary DESC) to generate rankings and then applies a WHERE condition on the outer query to select the required result. This approach is preferred over RANK() because RANK() skips ranking positions when duplicates are present, which can lead to incorrect results when identifying the nth highest value. Therefore, DENSE_RANK() ensures accurate results by handling duplicates properly and maintaining consistent ranking, making it a reliable solution for such problems in SQL.
+
+
+DELETE is a DML operation used to remove specific rows from a table using a WHERE clause and does not reset identity values, allowing rollback if wrapped in a transaction. TRUNCATE is a DDL operation used to remove all rows from a table efficiently without logging each row deletion and resets identity values, but it does not support rollback in most databases. DROP is also a DDL operation that completely removes the table along with its structure, data, and associated objects like indexes, making it irreversible.
+
+we have to use "ON" when you use joins
+
+Indexing is a database optimization technique used to improve the speed of data retrieval operations. It creates a separate data structure that allows the database to locate rows quickly without scanning the entire table. Indexes are especially useful for columns used in WHERE clauses, joins, sorting, and grouping operations. While indexing significantly enhances SELECT query performance, it comes with trade-offs such as additional storage consumption and slower write operations (INSERT, UPDATE, DELETE) because the index must also be maintained. Therefore, indexes should be applied selectively to balance read performance and write efficiency.
+
+“Normalization in SQL is the process of organizing database tables to minimize redundancy and improve data integrity. It involves dividing large tables into smaller ones and defining relationships between them using keys. It is achieved through normal forms like 1NF, 2NF, and 3NF.”
+
+absraction vs interface?
+how will you handle the exceptions ?
+difference between method overloading and method overriding?
+

@@ -1,0 +1,790 @@
+Angular is a popular front-end framework developed by Google, primarily used for building single-page applications (SPAs). It provides a robust structure for developing dynamic web apps with features like two-way data binding, dependency injection, and modular architecture.
+
+The first version of Angular (AngularJS) was released in 2010 and used JavaScript as its programming language.
+Later versions, starting from Angular 2, transitioned to TypeScript, a statically typed superset of JavaScript that offers better tooling, type safety, and object-oriented features.
+Role of Node.js in Angular Development:
+
+While Angular itself runs in the browser, Node.js plays a crucial role in the development environment:
+
+Development Tools: Angular CLI (Command Line Interface), which is used to create, build, and manage Angular projects, is built on Node.js.
+Package Management: Node.js includes npm (Node Package Manager), which is used to install Angular libraries, third-party modules, and development dependencies.
+Build Process: Node.js enables tools like Webpack, TypeScript compiler, and Babel to bundle and transpile Angular code efficiently.
+Server-Side Rendering (SSR): With Angular Universal, Node.js can be used to render Angular applications on the server side, improving performance and SEO.
+Local Development Server: Node.js powers the local development server that serves your Angular app during development, enabling live reload and fast feedback.
+
+Component:
+
+A component is the fundamental building block of an Angular application. It controls a section of the user interface (UI) and is composed of the following files:
+
+HTML file: Defines the structure and layout of the UI.
+CSS/SCSS file: Styles the component’s UI.
+TypeScript file: Contains the component’s logic, data, and behavior.
+Spec file (test file): Used for writing unit tests to ensure the component works as expected.
+Each component in Angular is defined using a TypeScript class decorated with @Component, which links the HTML, CSS, and metadata together.
+
+Command to create the component:
+ng g c ComponentName
+Selector : it is nothing but a customized tag created by the angular framework .Wherever you uses this tag we can use html related to the selector.
+
+Angular Structure :
+
+node_modules: All the files which are required to develop angular application will be downloaded into this folder.
+if want to use any library file ..we can just use the command npm install libraryFileName.It will be loaded into the node_modules folder.
+
+Src :The folder where we will keep the logic
+
+Modules :Modules are nothing but group of one or more components.An angular application should have atleast one module.
+Angular uses Node.js-based build tools to compile TypeScript into browser-compatible JavaScript.
+The browser then executes that JavaScript, which runs the Angular framework that renders and manages the application.
+
+When the application starts, the browser parses HTML and creates the DOM tree; once JavaScript loads, Angular takes control of a specific DOM element (app-root) and dynamically updates the DOM at runtime.
+✅ What is DOM?
+DOM = Document Object Model
+
+The DOM is a tree‑like JavaScript representation of an HTML page that the browser creates and manages.
+
+In short:
+
+HTML → parsed by browser
+Browser converts HTML into DOM
+JavaScript (and Angular) interacts with the DOM, NOT raw HTML
+What the Browser Does with HTML
+Suppose your HTML is:
+<html>
+  <body>
+    <h1>Hello</h1>
+    <button>Click</button>
+  </body>
+</html>
+
+The browser does not work with this text directly.
+Instead, it converts it into a DOM tree.
+ DOM as a Tree (Very Important)
+The browser builds something like this:
+Document
+ └── html
+     └── body
+         ├── h1
+         │    └── "Hello"
+         └── button
+              └── "Click"
+
+Each item is a node (object).
+✅ This tree exists in memory
+✅ JavaScript can read/change it
+
+3️⃣ DOM Is a JavaScript Object
+The DOM is not HTML.
+It is JavaScript objects created by the browser.
+Why DOM Exists
+The DOM allows JavaScript to:
+
+Change text
+Add elements
+Remove elements
+React to user actions
+DOM and User Interaction
+
+When you click a button:
+<button>Click</button>
+
+What really happens:
+
+Browser detects mouse event
+DOM generates a click event
+JavaScript event listener runs
+
+dom object will be created when the applicatoin start right ..again the why event click object will be created?
+Yes ✅
+The DOM object (DOM tree) is created when the page loads.
+❌ But click events are NOT created at page load.
+✅ A click event object is created only when the click actually happens.
+
+6️⃣ DOM vs HTML (This Is Key)
+HTMLDOMStatic text fileDynamic object modelSent by serverCreated by browserCannot change itselfCan change anytimeJust markupLive tree + events
+✅ HTML is the input
+✅ DOM is the runtime structure
+
+7️⃣ Where Angular Fits In
+Angular does NOT manipulate HTML directly.
+Angular:
+Reads the DOM
+Creates DOM nodes
+Updates DOM efficiently
+
+Browser loads HTML
+Browser creates DOM
+JavaScript & Angular work with DOM
+DOM updates = UI updates
+
+how the dom is created when we start the application?
+
+This process happens in two distinct phases:
+
+Browser creates the initial DOM
+Angular takes over part of the DOM and updates it at runtime
+
+Let’s walk through it in real sequence.
+
+1️⃣ Browser Requests the Page
+You open a URL:
+http://localhost:4200/
+
+✅ The browser sends an HTTP request
+✅ Server responds with HTML (generated index.html)
+
+2️⃣ Browser Receives HTML (Text Only)
+The browser receives something like:
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>EasyTrack</title>
+  </head>
+  <body>
+    <app-root></app-root>
+
+    <script src="main.js"></script>
+  </body>
+</html>
+
+At this moment:
+
+This is just text
+No DOM yet
+<app-root> is unknown to the browser
+
+ Browser Starts Parsing HTML → Creates DOM
+As the browser reads HTML top to bottom, it creates DOM nodes.
+<body>
+  <app-root></app-root>
+</body>
+
+Becomes this DOM tree in memory:
+Document
+ └── html
+     └── body
+         └── app-root
+
+✅ This is the initial DOM
+✅ It contains an empty <app-root>
+Browser behavior:
+
+Downloads main.js
+Executes it immediately
+
+⚠️ This is the turning point
+
+5️⃣ JavaScript Starts Running (Angular Bootstraps)
+Inside main.js (simplified):
+bootstrapApplication(AppComponent);
+Angular Scans the Existing DOM
+Angular does NOT create the entire DOM from scratch.
+Instead, it:
+
+Looks at the DOM already created by the browser
+Searches for the selector of the root component
+@Component({
+  selector: 'app-root'
+})
+Angular finds:
+<app-root></app-root>
+Match found
+
+7️⃣ Angular Takes Control of <app-root>
+Angular now:
+
+Creates an instance of AppComponent
+Processes its template
+Converts template into DOM instructions
+Inserts DOM nodes inside <app-root>
+
+Example:
+<app-root>
+  <h1>Hello</h1>
+  <router-outlet></router-outlet>
+</app-root>
+DOM is now dynamically updated
+
+DOM After Angular Starts (Important)
+At runtime, the DOM looks like:
+Document
+ └── html
+     └── body
+         └── app-root   ← Angular-controlled
+             ├── h1
+             ├── div
+             └── button
+
+✅ Browser owns the DOM
+✅ Angular manages part of it
+
+10️⃣ What Happens Next (Runtime DOM Updates)
+When:
+
+Data changes
+Button clicked
+Route changes
+
+Angular:
+
+Updates component state
+Updates only affected DOM nodes
+Browser re-renders affected areas
+
+✅ No page reload
+✅ DOM stays alive
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+what are forms ?
+forms are used to capture the data ,validate the data and manages the input.
+these forms used to build features like 
+login/sign up forms 
+search feature 
+filter etec
+we can create the forms in 2 ways :
+1.template driven form : In this ,the form is mostly rely on the html template.it means the form structure ,form logic,form validation are created in the html template itself not in the type script file ..when angular sees the html attributes ,by default it will create the form model done automatically .the type script file is just used capture the result of the form.
+<form #loginform="ngForm" (ngSubmit)="login()">
+<input name=""username" [(ngModel)]="username">
+<input name=""password" [(ngModel)]="password">
+<button type="submit" >login</button>
+ 
+that's it if you define the form like that angular automatically create the formmodel and validate the form in the html template only and just we need to define the form names in the ts file 
+username!:string;
+password!:string;
+the data will flow in way direction from html to ts ,ts-html as it is using [(ngModel)]
+,using the rxjs on template is less 
+used for simple forms like login ,registration ,contact pages like that ..
+
+reactive forms :
+this form is mostly rely on ts file ..form managing is done in the ts file ..
+best for large enterprise forms ..
+we have to create form model manually ..
+formgroup and form control and validation entire form has to create manually ..full control over the forms.
+reactive forms are integrated with rxjs optiomizations.
+these are dynamic forms means ..fields will be created based on the input .
+this forms are scalable means ..since the forms are on ts side ..we can move this form tbehaveso service class and we inject this forms in any module ..
+
+lifecycle hooks: these are part of component life cycle.these are methods will be executed when the component loads ..
+ngonchanges()-> will be executed if there is any input coming to the component otherwise this method will not executed
+ngOnInit()->will be executed for the first time when the component loads. only once .
+ 
+What is a Component in Angular?
+An Angular Component is a building block of the UI.
+It controls a part of the screen (view) and defines how that view  and looks.
+👉 In simple words:
+
+A component = HTML (view) + TypeScript (logic) + CSS (style)
+
+Why Components Are Important
+Angular applications are component-based.
+Instead of one large page, the UI is split into small, reusable components such as:
+
+Header component
+Footer component
+Login component
+Dashboard component
+
+This makes the app:
+
+Easier to maintain
+Reusable
+Scalable
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css']
+})
+export class UserComponent {
+  name: string = 'Venkatesh';
+}
+
+Parts of an Angular Component
+1. @Component Decorator
+TypeScript@Component({ ... })
+A decorator that gives metadata to Angular
+Tells Angular:
+👉 “This class is a component.”
+
+
+2. selector
+TypeScriptselector: 'app-user'
+Defines how the component is used in HTML
+
+Example usage:
+HTML<app-user></app-user>Show more lines
+
+3. template or templateUrl
+TypeScript templateUrl: './user.component.html'
+The HTML view of the component
+Displays data and listens to user actions
+
+Example HTML:
+HTML<h2>Hello {{ name }}</h2>Show more lines
+
+4. styleUrls
+TypeScriptstyleUrls: ['./user.component.css']
+CSS styles specific to this component
+Styles are scoped (do not affect other components)
+
+
+5. Component Class (Logic)
+TypeScriptexport class UserComponent {  name: string = 'Venkatesh';}
+Written in TypeScript
+Holds:
+
+Data (variables)
+Methods
+Business logic
+
+The const keyword in JavaScript is used to declare variables that cannot be reassigned. It is used to indicate that the value of the variable will not change throughout the program execution.
+
+There are two types of const variables in JavaScript:
+
+Constant variable: This type of const variable is used to declare a variable whose value cannot be changed once it is assigned. For example:
+javascript
+const PI = 3.14;
+PI = 3.14159; // This will result in an error because the value of PI cannot be changed
+
+Immutable object: This type of const variable is used to declare a variable that refers to an object. The object itself can be modified, but the variable cannot be reassigned to refer to a different object. For example:
+
+const person = { name: 'John', age: 30 };
+person.name = 'Jane'; // This is allowed because the object itself is modified
+person = { name: 'Alice' }; // This will result in an error because the variable cannot be reassigned..
+
+
+from angular 19 version all components by default are standalone components.
+we can have single file components as well ..by keeping the template and css file in the same ts file ..with inline template and inline style.
+
+In Angular, decorators are special TypeScript functions that add metadata to classes, properties, methods, or parameters. Angular uses this metadata to understand how different parts of your application should behave at runtime.
+
+1. Class Decorators
+Class decorators are applied to classes and define what role the class plays in an Angular application.
+Common Class Decorators
+@Component
+Defines a component and its metadata.
+@Component({
+  selector: 'app-user',   
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css']
+})
+export class UserComponent {}
+
+@Directive
+Creates a custom directive.
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {}
+@Pipe
+Creates a custom pipe.
+@Pipe({
+  name: 'capitalize'
+})
+export class CapitalizePipe {}
+
+@Injectable
+Marks a class as available for dependency injection.
+@Injectable({
+  providedIn: 'root'
+})
+export class UserService {}
+
+2. Property Decorators
+Property decorators are applied to class properties and control data flow between components and directives.
+Common Property Decorators
+@Input
+Receives data from a parent component.
+@Input() userName!: string;
+
+@Output
+Emits events to a parent component.
+@Output() userSelected = new EventEmitter<number>();
+@HostBinding
+Binds a property to a host element attribute.
+@HostBinding('class.active') isActive = true;
+
+3. Method Decorators
+Method decorators are applied to class methods and typically handle events.
+Common Method Decorators
+@HostListener
+Listens to events on the host or global objects.
+@HostListener('click')
+onClick() {
+  console.log('Element clicked');
+}
+✅ Used for: Event handling
+
+4. Parameter Decorators
+Parameter decorators are applied to constructor parameters and control dependency injection behavior.
+Common Parameter Decorators
+@Inject
+Specifies a custom provider token.
+constructor(@Inject(APP_CONFIG) config: AppConfig) {}
+
+@Optional
+Marks a dependency as optional.
+constructor(@Optional() private logger?: LoggerService) {}
+@Self
+Forces Angular to resolve dependency from the local injector.
+constructor(@Self() private service: LocalService) {}
+
+Decorators are metadata annotations in Angular that tell the framework how to process classes, properties, methods, and constructor parameters.
+
+data Binding :it is nothing but the binding the data between component and template.
+One-way-binding:
+the flow of data is one direction only either template to ts or ts  to template.
+interpolation -the flow will be from ts file to template .
+property binding -ts -> template.
+event binding -template -> ts
+Two data binding :
+the data flow in both direction .
+can be achived by ngModel directive 
+<input type="text" [(ngModel)]="variable name"> to use the ngModel we have to import the formmodule in the imports.
+
+Directives : directives are special classes used to change the appearance or behavior or structure of DOM elements .
+there are 3 types :
+Components :component are also called as directive which it changes the structure of DOM .
+structural directives : these classes changes the structure of DOM ..by using the *ngIf,*ngFor,*ngSwitch..
+attribute directives :these classes changes the appearance of DOM elements ..ngClass,ngStyle,
+
+Routing in Angular is used to navigate between different components based on the URL in a single‑page application without reloading the page. Redirect is a part of routing that automatically navigates from one route to another.
+
+navigate() and routerlink():
+navigate() is used to route from 1 page to another page using the ts file.
+routelink is used to route from page to page using template file
+we can load the componenets lazily by loadchildern() in the path routes ..by default when the application starts ..all the components loaded ...
+from angular 17 we got control flow statments like if if else
+✅ What is Angular Change Detection?
+Angular Change Detection is the mechanism that:
+Tracks changes in component state (data)
+Updates the DOM automatically
+Ensures the UI is always in sync with application databy default is uses the zone.js to track the changes ..
+
+Default Change Detection (Zone.js-based)
+✔️ How it works
+By default, Angular uses zone.js to detect changes.
+Whenever any of these happen:
+
+Button click
+HTTP response
+Timer (setTimeout, setInterval)
+Promise resolution
+DOM event
+
+👉 Zone.js notifies Angular, and Angular:
+
+Runs change detection for the entire component tree
+Updates bindings in the DOM
+
+ Signals (Angular 16+)
+✅ What are Signals?
+Signals are a reactive, fine-grained state management mechanism introduced in Angular 16.
+
+Signals allow Angular to detect exactly which values changed, instead of checking everything.
+
+
+✅ Key Features of Signals
+✅ No need for zone.js
+✅ Change detection is precise and efficient
+✅ Only dependent parts of the DOM update
+
+in ts file :
+count =signal(0);
+this.count.set(10);
+this.count.update(oldvalue->old value+new vaule)
+
+in html file:
+count();
+Angular Change Detection is the mechanism that tracks changes in component state and updates the DOM accordingly.
+By default, Angular uses Zone.js, which triggers change detection whenever asynchronous events occur.
+Signals, introduced in Angular 16, provide a fine‑grained, reactive way to track state changes without relying on Zone.js. Signals are accessed using function syntax and updated using set() or update().
+Signals work best with OnPush change detection and can be used in a zoneless Angular setup for improved performance.
+OnPush improves performance by limiting change detection to specific conditions, while Default checks the whole component tree on every event.
+ Real‑World Analogy
+
+Default → Checking every room when one bulb breaks
+OnPush + Signals → Checking only the broken bulb
+Without OnPush (Default)
+
+App with 100 components
+Click button in one component
+✅ Angular checks all 100 components
+
+This leads to:
+❌ Slower UI
+❌ Wasted CPU cycles
+
+Constructor is called when the component is created and is mainly used for dependency injection.
+ngOnChanges reacts to changes in input properties from the parent.
+ngOnInit is called once when the component is initialized and is used for API calls and business logic.
+ngAfterViewInit is called after the DOM is created and is used for DOM-related operations.it will be executed only once.
+ngDoCheck is used for custom change detection logic.
+ngOnDestroy is called when the component is destroyed and is used for cleanup activities like unsubscribing.
+ngAfterViewChecked runs after every change detection cycle, so it should be used very carefully. Heavy logic or state changes inside it can cause performance issues or infinite loops.
+
+ngAfterContentInit
+ngAfterContentChecked
+First: What is Content in Angular?
+Content ≠ View
+
+View → HTML written inside the component’s template
+Content → HTML passed from the parent using <ng-content>
+
+Example (Parent → Child)
+<!-- parent.component.html -->
+<app-card>
+  <h2>User Details</h2>
+  <p>This comes from parent</p>
+</app-card>
+
+
+<!-- card.component.html -->
+<div class="card">
+  <ng-content></ng-content>
+</div>
+
+<h2> and <p> are projected content
+1️⃣ ngAfterContentInit
+✅ What does it mean?
+
+Called once
+Called after Angular projects external content (ng-content) into the component
+
+📌 Similar to ngAfterViewInit, but for projected content, not the component’s own DOM.
+
+✅ When does it run?
+ngOnInit
+ngAfterContentInit ✅ (once)
+ngAfterViewInit
+
+
+✅ Real‑Time Use Case
+@ContentChild('title') title!: ElementRef;
+
+ngAfterContentInit() {
+  console.log('Projected content initialized');
+}
+@ContentChild('title') title!: ElementRef;
+
+ngAfterContentInit() {
+  console.log('Projected content initialized');
+}
+“Parent’s content is now available inside my component.”
+2️⃣ ngAfterContentChecked
+✅ What does it mean?
+
+Called after every change detection cycle
+Runs whenever projected content is checked
+
+📌 Similar to ngAfterViewChecked, but for projected content.
+
+✅ When does it run?
+
+After ngAfterContentInit
+After:
+
+Input changes
+Parent data updates
+Any change detection trigger
+
+ngAfterContentChecked() {
+  console.log('Projected content checked');
+}
+This will log many times, just like ngAfterViewChecked.
+
+ngAfterContentInit is called once after Angular projects external content into the component.
+
+
+ngAfterContentChecked is called after every change detection cycle to check projected content.
+
+Reusable components are Angular components created to be used multiple times across the application.
+Instead of duplicating the same HTML and logic in many components, we keep common UI and behavior in a reusable component and use it via its selector.
+This helps remove boilerplate code, improves maintainability, and ensures consistency.
+Data is passed to reusable components using @Input() and events are emitted back using @Output().
+for the component communication @input and @output is also used 
+A class is used to create objects and contains both data and logic, whereas an interface is used only to define the structure of an object.
+Classes exist at runtime and can be instantiated, while interfaces are used only at compile time for type checking and are removed after compilation.
+In Angular, classes are used for components and services, while interfaces are commonly used for API models and data contracts.
+
+When we make an API call in Angular:
+
+The HTTP client returns an Observable.
+The Observable represents the future data stream from the API.
+The API (server) sends data asynchronously.
+The Observable emits the data when the response arrives.
+The subscribe() method listens to the Observable.
+Inside subscribe, Angular updates the component state.
+Angular’s change detection automatically updates the DOM
+
+What is the use of AuthGuard in Angular?
+An AuthGuard in Angular is used to control access to application routes based on conditions such as whether a user is logged in, authorized, or has a specific role.
+In simple terms:
+👉 AuthGuard protects routes from unauthorized users
+
+✅ Why do we need AuthGuard?
+Without an AuthGuard:
+
+Any user can directly access protected URLs
+(example: /dashboard, /admin, /profile)
+
+With an AuthGuard:
+
+Only authenticated or authorized users can access specific routes
+Others are redirected (usually to /login)
+
+
+✅ How AuthGuard Works (Flow)
+
+User tries to navigate to a route
+Angular checks the AuthGuard
+Guard returns:
+
+✅ true → allow access
+❌ false → block access
+🔁 Redirect to login or another page
+
+
+
+
+✅ Example: AuthGuard Logic
+🔹 auth.guard.ts
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
+
+@Injectable({ providedIn: 'root' })
+export class AuthGuard implements CanActivate {
+
+  constructor(private router: Router) {}
+
+  canActivate(): boolean {
+    const isLoggedIn = !!localStorage.getItem('token');
+
+    if (isLoggedIn) {
+      return true;
+    } else {
+      this.router.navigate(['/login']);
+      return false;
+    }
+  }
+}
+``Checks whether user is logged in
+✅ Redirects to login if not
+
+✅ Using AuthGuard in Routes
+{
+  path: 'dashboard',
+  component: DashboardComponent,
+  canActivate: [AuthGuard]
+}
+✅ Protected route
+✅ Cannot access directly without login
+
+✅ Types of Guards in Angular
+GuardPurposeCanActivateAllow or block route accessCanActivateChildProtect child routesCanDeactivatePrevent leaving a pageResolveFetch data before route loadsCanLoadPrevent lazy module loading
+
+✅ Real‑World Example
+
+/login → public
+/dashboard → only logged‑in users
+/admin → only admin users
+
+AuthGuard ensures:
+
+Security ✅
+Proper navigation ✅
+Better user experience ✅
+
+@ViewChild can be used to access DOM elements and child components that belong to the same component’s view.
+It cannot be used to access a parent component’s DOM from a child component because Angular enforces component encapsulation. Parent–child interaction should instead be handled using Inputs and Outputs.
+import { AfterViewInit, Component, ElementRef, inject, ViewChild } from '@angular/core';
+import { CustomAttribute } from "../../custom-attribute/custom-attribute";
+import { Router, RouterOutlet } from '@angular/router';
+import { JsonPipe } from '@angular/common';
+
+
+@Component({
+  selector: 'app-layout',
+  imports: [CustomAttribute, RouterOutlet],
+  templateUrl: './layout.html',
+  styleUrl: './layout.css',
+})
+export class Layout implements AfterViewInit   {
+  ngAfterViewInit(): void {
+   this.buttonnchild.nativeElement.style.border = '2px solid blue';
+  }
+@ViewChild('buttonId') buttonnchild!:ElementRef<HTMLButtonElement>;
+@ViewChild('customAttr') customattribute!:CustomAttribute;
+
+  route=inject(Router);
+logout(){
+  localStorage.removeItem('token');  
+  this.route.navigate(['/login']); 
+  if(this.buttonnchild){
+    this.buttonnchild.nativeElement.style.backgroundColor = 'red';
+    console.log(this.buttonnchild.nativeElement);
+  }
+  if(this.customattribute){
+    const EmployeeArray=this.customattribute.employeearray;
+        console.log(EmployeeArray);
+  }
+
+}
+
+
+}
+<!-- 
+
+<button routerLink="/transactionsearch">
+  Transaction Search
+</button>
+<button routerLink="/practice">
+  Practice Component
+</button>
+
+<router-outlet></router-outlet> -->
+
+<!-- <app-headercomponent/>
+<app-usercomponent/> -->
+<app-custom-attribute #customAttr></app-custom-attribute>
+
+<button routerLink="/transactionsearch">
+  Transaction Search
+</button>
+<button routerLink="/practice">
+  Practice Component
+</button>
+<button type="button" #buttonId (click)="logout()">
+  Logout
+</button>
+
+
+<router-outlet></router-outlet>
+ng-container is used to group elements and apply structural directives without adding extra DOM nodes. It allows us to logically apply multiple structural directives through nesting, while still respecting the rule of one structural directive per element.
+ng-template is used to define reusable or conditional HTML blocks that are not rendered by default and are instantiated only when explicitly referenced, such as via *ngIf, else, or ngTemplateOutlet.
+from angular 16 we dont need constructore for dependency injection ..we can directly inject by using inject method
+route=inject(Router);
+
